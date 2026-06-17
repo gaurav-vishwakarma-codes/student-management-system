@@ -220,7 +220,7 @@ Screenshots of the application can be added here.
 
 # Author
 
-Gaurav Vishwakarma
+Code Learner
 
 BCA Student | Python, SQLite & Java Developer | Cybersecurity Enthusiast
 
