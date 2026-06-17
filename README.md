@@ -87,7 +87,7 @@ SMS/
 ## 1. Clone Repository
 
 ```bash
-git clone <repository-link>
+git clone https://github.com/gaurav-vishwakarma-codes/student-management-system.git
 ```
 
 ## 2. Open Project Folder
