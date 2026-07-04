@@ -1,415 +1,334 @@
+# =====================================================
+# Validations
+# All input validation functions for the application
+# Each function returns an error string or None (if valid)
+# =====================================================
+
 import re
-from .messages import error_message
 
-# ========== PAGINATION VALIDATION ==========
-def validate_pagination_choice(choice):
 
-    choice = choice.lower().strip()
+# =====================================================
+# REQUIRED FIELDS CHECK
+# =====================================================
 
-    valid_choices = ["n", "p", "e"]
+def validate_required_fields(data):
+    """
+    Accepts a dict of {field_name: value}.
+    Returns a list of field names that are empty.
+    Returns an empty list if all fields are filled.
+    """
 
-    if choice not in valid_choices:
-        error_message(
-            "Please Enter Only N, P Or E"
-        )
-        return False
+    missing_fields = []
 
-    return True
+    for field_name, value in data.items():
 
+        # CHECK IF FIELD IS EMPTY AFTER STRIPPING WHITESPACE
+        if not str(value).strip():
+            missing_fields.append(field_name)
+
+    return missing_fields
+
+
+# =====================================================
 # ROLL NUMBER VALIDATION
+# =====================================================
+
 def validate_roll_no(roll_no):
+    """
+    Validates roll number input.
+    Must be a non-empty positive integer (digits only).
+    Returns error string if invalid, None if valid.
+    """
 
     # EMPTY CHECK
     if roll_no.strip() == "":
-        error_message(
-            "Roll Number Cannot Be Empty."
-        )
-        return False
+        return "Please enter a roll number."
 
-    # NUMERIC CHECK
+    # DIGITS ONLY CHECK
     if not roll_no.isdigit():
-        error_message(
-            "Roll Number Must Be Numeric POSITIVE VALUE."
-        )
-        return False
-    
-    roll_no_int = int(roll_no)
-    
-    # POSITIVE CHECK
-    if roll_no_int == 0:
-        error_message("Roll Number Must Be Greater Than 0.")
-        return False
+        return "Roll number must contain digits only."
 
-    return True
+    # MUST BE GREATER THAN ZERO
+    if int(roll_no) == 0:
+        return "Roll number must be greater than 0."
 
 
-# NAME VALIDATION
+# =====================================================
+# FULL NAME VALIDATION
+# =====================================================
+
 def validate_name(full_name):
-    
+    """
+    Validates full name input.
+    - Must contain letters and spaces only
+    - Must have at least 2 words (first + last name)
+    - Each word must be at least 3 characters
+    Returns error string if invalid, None if valid.
+    """
+
     full_name = full_name.strip()
 
     # EMPTY CHECK
     if full_name == "":
-        error_message(
-            "Name Cannot Be Empty."
-        )
-        return False
-    
-    # ONLY ALPHABETS + SPACES ALLOWED
-    if not all(
-        char.isalpha() or char.isspace()
-        for char in full_name
-    ):
-        error_message(
-            "Name Must Contain Only Alphabets"
-        )
-        return False
-    
-    # SPLIT WORDS
+        return "Please enter the student's full name."
+
+    # ONLY LETTERS AND SPACES ALLOWED
+    if not all(char.isalpha() or char.isspace() for char in full_name):
+        return "Name can contain letters and spaces only."
+
+    # SPLIT INTO WORDS
     words = full_name.split()
 
-    # REQUIRE FIRST + LAST NAME
-    if len(words) < 2:  # checks the number of words, not the number of characters
-        error_message(
-            "Enter Full Name (First And Last Name)"
-        )
-        return False
+    # REQUIRE AT LEAST FIRST AND LAST NAME
+    if len(words) < 2:
+        return "Please enter first and last name.\n Example: Rahul Sharma."
 
-    # EACH WORD MINIMUM 3 CHARACTERS
+    # EACH WORD MUST BE AT LEAST 3 CHARACTERS
     for word in words:
-
         if len(word) < 3:
-            error_message(
-                "Each Name Must Contain At Least 3 Characters"
-            )
-            return False
-
-    return True
+            return "Each part of the name must contain at least 3 letters."
 
 
+# =====================================================
 # AGE VALIDATION
+# =====================================================
+
 def validate_age(age):
+    """
+    Validates age input.
+    - Must be digits only
+    - Must be between 5 and 50
+    Returns error string if invalid, None if valid.
+    """
 
+    # EMPTY CHECK
     if age.strip() == "":
-        error_message("Age Cannot Be Empty")
-        return False
+        return "Please enter age."
 
-    # DIGIT CHECK
+    # DIGITS ONLY CHECK
     if not age.isdigit():
-        error_message(
-            "Age Must Be Numeric POSITIVE VALUE."
-        )
-        return False
+        return "Age must contain digits only."
 
     age = int(age)
 
     # RANGE CHECK
     if age < 5 or age > 50:
-        error_message(
-            "Age Must Be Between 5 And 50"
-        )
-        return False
+        return "Age must be between 5 and 50 years."
 
-    return True
 
+# =====================================================
 # GENDER VALIDATION
+# =====================================================
+
 def validate_gender(gender):
-    
+    """
+    Validates gender input.
+    - Must be one of: Male, Female, Other (case-insensitive)
+    Returns error string if invalid, None if valid.
+    """
+
     # EMPTY CHECK
     if gender.strip() == "":
-        error_message(
-            "Gender Cannot Be Empty"
-        )
-        return False
-    
-    # ONLY ALPHABETS
+        return "Please enter gender."
+
+    # LETTERS ONLY
     if not all(char.isalpha() for char in gender):
-        error_message(
-            "Gender Must Contain Only Alphabets"
-        )
-        return False
-    
-    gender = gender.strip().lower()
+        return "Gender can contain letters only."
 
-    valid_genders = ["male", "female", "other"]
+    # MUST MATCH VALID OPTIONS
+    if gender.strip().lower() not in ["male", "female", "other"]:
+        return "Please enter Male, Female, or Other."
 
-    if gender not in valid_genders:
-        error_message("Gender Must Be Male, Female Or Other")
-        return False
 
-    return True
-
+# =====================================================
 # COURSE VALIDATION
+# =====================================================
+
 def validate_course(course):
+    """
+    Validates course input.
+    - Must be at least 2 characters
+    - Cannot be digits only
+    - Can contain letters, spaces, and dots (e.g. B.Sc)
+    Returns error string if invalid, None if valid.
+    """
 
     course = course.strip()
 
     # EMPTY CHECK
     if course == "":
-        error_message(
-            "Course Cannot Be Empty"
-        )
-        return False
+        return "Please enter a course name."
 
     # MINIMUM LENGTH
     if len(course) < 2:
-        error_message(
-            "Course Name Must Contain At Least 2 Characters"
-        )
-        return False
-    
-    # SHOULD NOT BE ONLY NUMBERS
-    if course.isdigit():
-        error_message(
-            "Course Name Cannot Be Only Numbers"
-        )
-        return False
+        return "Course name must contain at least 2 characters."
 
-    # ALLOW LETTERS, SPACES, DOTS
+    # CANNOT BE ONLY DIGITS
+    if course.isdigit():
+        return "Course name must contain at least one letter."
+
+    # ONLY LETTERS, SPACES, AND DOTS ALLOWED
     if not all(
         char.isalpha() or
         char.isspace() or
         char == "."
         for char in course
     ):
-        error_message(
-            "Course Name Contains Invalid Characters"
-        )
-        return False
-
-    return True
+        return "Course name can contain letters, spaces, and dots only."
 
 
+# =====================================================
 # EMAIL VALIDATION
+# =====================================================
+
 def validate_email(email):
+    """
+    Validates email address using a regex pattern.
+    Must match standard email format: user@domain.ext
+    Returns error string if invalid, None if valid.
+    """
 
     # EMPTY CHECK
     if email.strip() == "":
-        error_message(
-            "Email Cannot Be Empty"
-        )
-        return False
+        return "Please enter an email address."
 
     email = email.strip()
 
+    # REGEX PATTERN FOR VALID EMAIL FORMAT
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
 
-    if re.match(pattern, email):
-        return True
-
-    error_message("Invalid Email Format (Example: abc123@gmail.com or abc@yahoo.com)")
-
-    return False
+    if not re.match(pattern, email):
+        return "Please enter a valid email address.\n Example: abc123@gmail.com"
 
 
+# =====================================================
 # PHONE VALIDATION
+# =====================================================
+
 def validate_phone(phone):
+    """
+    Validates phone number input.
+    - Must be digits only
+    - Must be exactly 10 digits
+    Returns error string if invalid, None if valid.
+    """
 
     phone = phone.strip()
 
     # EMPTY CHECK
     if phone == "":
-        error_message(
-            "Phone number Cannot Be Empty"
-        )
-        return False
+        return "Please enter a phone number."
 
-    # ONLY DIGITS
+    # DIGITS ONLY
     if not phone.isdigit():
-        error_message(
-            "Phone Number Must Contain Only Digits"
-        )
-        return False
+        return "Phone number must contain digits only."
 
-    # LENGTH CHECK
+    # MUST BE EXACTLY 10 DIGITS
     if len(phone) != 10:
-        error_message(
-            "Phone Number Must Be 10 Digits"
-        )
-        return False
-
-    return True
+        return "Phone number must be exactly 10 digits."
 
 
+# =====================================================
 # ADDRESS VALIDATION
+# =====================================================
+
 def validate_address(address):
+    """
+    Validates address input.
+    - Must not be empty
+    - Must be at least 2 characters
+    - Cannot be digits only
+    Returns error string if invalid, None if valid.
+    """
 
     address = address.strip()
 
     # EMPTY CHECK
     if address == "":
-        error_message("Address Cannot Be Empty")
-        return False
-    
+        return "Please enter an address."
+
     # MINIMUM LENGTH
     if len(address) < 2:
-        error_message("Address Must Contain At Least 2 Characters")
-        return False
-    
-    # SHOULD NOT BE ONLY NUMBERS
+        return "Address must contain at least 2 characters."
+
+    # CANNOT BE DIGITS ONLY
     if address.isdigit():
-        error_message("Address Cannot Be Only Numbers")
-        return False
+        return "Address must contain letters and cannot be numbers only."
 
-    return True
 
+# =====================================================
+# USERNAME VALIDATION
+# =====================================================
 
 def validate_username(username):
+    """
+    Validates admin username.
+    - Letters, digits, and underscore (_) only
+    - Cannot be digits only
+    - Minimum 3 characters
+    Returns error string if invalid, None if valid.
+    """
 
     username = username.strip()
-    
+
     # EMPTY CHECK
     if username == "":
-        error_message("Username Cannot Be Empty")
-        return False
-    
-    # LETTERS + DIGITS + UNDERSCORE
-    if not all(
-        char.isalnum() or char == "_"
-        for char in username
-    ):
-        error_message(
-            "Username Can Contain Only Letters, Digits And Underscore"
+        return "Please enter a username."
+
+    # ONLY LETTERS, DIGITS, AND UNDERSCORE ALLOWED
+    if not all(char.isalnum() or char == "_" for char in username):
+        return (
+            "Username can only contain letters, "
+            "numbers, and underscore (_). "
+            "Example: admin_1"
         )
-        return False
-    
+
     # CANNOT BE ONLY DIGITS
     if username.isdigit():
-        error_message(
-            "Username Cannot Contain Only Numbers"
-        )
-        return False
-    
-        # MINIMUM LENGTH
+        return "Username must contain at least one letter."
+
+    # MINIMUM 3 CHARACTERS
     if len(username) < 3:
-        error_message("Username Must Be At Least 3 Characters")
-        return False
+        return "Username must be at least 3 characters long."
 
-    return True
 
+# =====================================================
+# PASSWORD VALIDATION
+# =====================================================
 
 def validate_password(password):
+    """
+    Validates admin password.
+    - Minimum 8 characters
+    - At least one letter
+    - At least one digit
+    - At least one special character
+    Returns error string if invalid, None if valid.
+    """
 
     password = password.strip()
 
+    # EMPTY CHECK
     if password == "":
-        error_message("Password Cannot Be Empty\n")
-        return False
+        return "Please enter a password."
+
+    # MINIMUM 8 CHARACTERS
+    if len(password) < 8:
+        return "Password must be at least 8 characters long."
 
     # AT LEAST ONE LETTER
     if not any(char.isalpha() for char in password):
-        error_message(
-            "Password Must Contain At Least One Letter\n"
-        )
-        return False
-    
-    # AT LEAST ONE NUMBER
+        return "Password must contain at least one letter (A-Z or a-z)."
+
+    # AT LEAST ONE DIGIT
     if not any(char.isdigit() for char in password):
-        error_message(
-            "Password Must Contain At Least One Number\n"
-        )
-        return False
-    
-    if len(password) < 4:
-        error_message("Password Must Contain At Least 4 Characters\n")
-        return False
-    
+        return "Password must contain at least one number (0-9)."
+
     # AT LEAST ONE SPECIAL CHARACTER
-    if not any(
-        not char.isalnum()
-        for char in password
-    ):
-        error_message(
-            "Password Must Contain At Least One Special Character\n"
+    if not any(not char.isalnum() for char in password):
+        return (
+            "Password must contain at least "
+            "one special character "
+            "(@, #, $, %, etc.)."
         )
-        return False
 
-    return True
-
-
-# ========== SEARCH VALIDATION ==========
-def validate_search_name(name):
-
-    name = name.strip()
-
-    # EMPTY CHECK
-    if name == "":
-        error_message(
-            "Name Cannot Be Empty"
-        )
-        return False
-
-    # ALPHABET CHECK
-    if not all(
-        char.isalpha() or char.isspace()
-        for char in name
-    ):
-        error_message(
-            "Name Must Contain Only Alphabets"
-        )
-        return False
-
-    return True
-
-def validate_search_course(course):
-
-    course = course.strip()
-
-    # EMPTY CHECK
-    if course == "":
-        error_message(
-            "Course Name Cannot Be Empty"
-        )
-        return False
-    
-    # ONLY LETTERS + SPACES
-    if not all(
-        char.isalpha() or char.isspace()
-        for char in course
-    ):
-        error_message(
-            "Course Name Must Contain Only Alphabets"
-        )
-        return False
-
-    return True
-
-def validate_search_gender(gender):
-
-    gender = gender.strip()
-
-    # EMPTY CHECK
-    if gender == "":
-        error_message(
-            "Gender Cannot Be Empty"
-        )
-        return False
-
-    # ONLY LETTERS
-    if not gender.isalpha():
-        error_message(
-            "Gender Must Contain Only Alphabets"
-        )
-        return False
-
-    return True
-
-def validate_search_email(email):
-
-    email = email.strip()
-
-    # EMPTY CHECK
-    if email == "":
-        error_message(
-            "Email Cannot Be Empty"
-        )
-        return False
-
-    # NO SPACES ALLOWED
-    if " " in email:
-        error_message(
-            "Email Cannot Contain Spaces"
-        )
-        return False
-
-    return True

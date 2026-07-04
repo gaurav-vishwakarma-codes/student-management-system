@@ -1,16 +1,32 @@
-import sqlite3
+# =====================================================
+# Database Connection
+# Handles creating and closing SQLite connections
+# =====================================================
 
+import sqlite3
+from config import DB_NAME
+
+# =====================================================
+# GET CONNECTION
+# =====================================================
 
 def get_connection():
     """
-    Creates and returns database connection and cursor safely.
+    Creates and returns a SQLite database connection and cursor.
+    Rows are returned as dictionary-like objects (sqlite3.Row),
+    so columns can be accessed by name e.g. row['full_name'].
+    Returns (None, None) if connection fails.
     """
-    try:
-        conn = sqlite3.connect("student.db")
 
-        # RETURN ROWS AS DICTIONARY (like JSON)
+    try:
+
+        # CONNECT TO DATABASE FILE
+        conn = sqlite3.connect(DB_NAME)
+
+        # RETURN ROWS AS DICTIONARY (access columns by name)
         conn.row_factory = sqlite3.Row
 
+        # CREATE CURSOR
         cursor = conn.cursor()
 
         return conn, cursor
@@ -20,15 +36,23 @@ def get_connection():
         return None, None
 
 
+# =====================================================
+# CLOSE CONNECTION
+# =====================================================
+
 def close_connection(conn, cursor=None):
     """
-    Safely closes database resources.
+    Safely closes the cursor and database connection.
+    Handles errors silently to avoid crashing the app.
     """
 
     try:
+
+        # CLOSE CURSOR IF PROVIDED
         if cursor:
             cursor.close()
 
+        # CLOSE CONNECTION IF PROVIDED
         if conn:
             conn.close()
 

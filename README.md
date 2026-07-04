@@ -1,231 +1,169 @@
-# Student Management System
-
-A console-based Student Management System built using Python and SQLite.
-
-This project allows administrators to manage student records with authentication, CRUD operations, history tracking, restore functionality, validations, pagination, and a modular project structure.
-
----
-
-# Features
-
-* Admin Registration & Login
-* Add Student Records
-* View Student Records
-* Search Students
-* Update Student Details
-* Delete Student Records
-* Restore Deleted Students
-* View Updated Students History
-* View Deleted Students History
-* Track Old Values and New Values During Updates
-* SQLite Database Integration
-* Input Validation
-* Pagination Support
-* Modular Project Structure
-* Dummy Data Insertion Support
+# 🎓 Student Management System (GUI)
+ 
+A desktop Student Management System built with **Python**, **Tkinter**, and **SQLite**.
+This is a **GUI-based upgrade** of my earlier [console-based Student Management System](https://github.com/gaurav-vishwakarma-codes/student-management-system) — same core logic, now with a proper interface, better structure, and safer data handling.
+ 
+Admins can register, log in, and perform full CRUD operations on student records, with update history, soft-delete, and restore support.
 
 ---
 
-# Technologies Used
-
-* Python 3
-* SQLite3
-* Visual Studio Code (VS Code)
+## 📸 Screenshots
+ 
+**Start Window**
+![Start Window](screenshots/start_window.png)
+ 
+**Admin Login**
+![Admin Login](screenshots/login.png)
+ 
+**Dashboard**
+![Dashboard](screenshots/dashboard.png)
+ 
+**View Students**
+![View Students](screenshots/view_students.png)
 
 ---
 
-# Requirements
+## ✨ Features
 
-* Python 3.10 or higher
-* SQLite3 (included with Python)
+- Admin Registration & Login (passwords hashed with SHA-256, never stored in plain text)
+- Add Student Records
+- View All Student Records in a table
+- Search Student by Roll Number
+- Update Individual or All Student Fields at once
+- Soft Delete Student Records (restorable, nothing is lost permanently)
+- Delete All Students at once
+- Restore Deleted Students (single or multi-select)
+- View Update History (old value → new value, with timestamp)
+- View Deletion History
+- Input validation on every field (name, email, phone, age, etc.)
+- Duplicate Roll Number & Email detection
+- Dummy Data Loader (100 sample students, for quick testing)
 
 ---
 
-# Project Structure
+## Technologies Used
 
-```text
+- **Python 3**
+- **Tkinter** — GUI
+- **SQLite3** — database (file-based, no server setup needed)
+
+---
+
+## Requirements
+
+- Python 3.10 or higher
+- SQLite3 (bundled with Python — no install needed)
+- Tkinter (bundled with Python on Windows/macOS; on Linux: `sudo apt install python3-tk`)
+
+No external dependencies — this project uses only Python's standard library (`tkinter`, `sqlite3`, `hashlib`, `re`). No `requirements.txt` needed.
+
+---
+
+## Project Structure
+
+```
 SMS/
 │
 ├── database/
-│   ├── db_connection.py
-│   ├── db_creation.py
-│   ├── dummy_data.py
-│   └── init.py
+│   ├── __init__.py
+│   ├── db_connection.py           # get_connection / close_connection
+│   ├── db_creation.py             # CREATE TABLE statements
+│   └── dummy_data.py              # 100 sample student records
 │
-├── operations/
-│   ├── add_student.py
-│   ├── delete_student.py
-│   ├── history.py
-│   ├── login.py
-│   ├── register_admin.py
-│   ├── search_student.py
-│   ├── update_student.py
-│   ├── view_students.py
-│   └── init.py
+├── gui/
+│   ├── __init__.py
+│   ├── start_window.py            # First screen: Login / Register choice
+│   ├── login_window.py            # Admin login form
+│   ├── register_window.py         # Admin registration form
+│   ├── dashboard.py               # Main menu after login
+│   ├── add_student_window.py      # Add Student form
+│   ├── view_students_window.py    # Table of all active students
+│   ├── search_student_window.py   # Search by Roll Number
+│   ├── update_student_window.py   # Update one or all student fields
+│   ├── delete_student_window.py   # Soft delete one / all students
+│   ├── view_updated_history_window.py  # Update history table
+│   └── view_deleted_history_window.py  # Deletion history + restore (single/multi-select)
 │
 ├── utils/
-│   ├── db_helper.py
-│   ├── display_helper.py
-│   ├── input_helper.py
-│   ├── messages.py
-│   ├── pagination_helper.py
-│   ├── password_helper.py
-│   ├── update_helper.py
-│   ├── validations.py
-│   └── init.py
+│   ├── __init__.py
+│   ├── validations.py             # All input validation functions
+│   ├── password_helper.py         # hash_password / verify_password
+│   ├── update_helper.py           # store_update_history / is_same_value
+│   ├── student_service.py         # Add / view / search / delete DB logic
+│   ├── update_student_actions.py  # Per-field + "update all" DB logic
+│   └── history_service.py         # Update/deleted history fetch + restore logic
 │
-├── main.py
-├── student.db
-├── README.md
-└── .gitignore
+├── config.py                      # DB_NAME constant (must stay at root)
+├── main.py                        # Entry point
+├── student.db                     # Auto-created on first run (gitignored)
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-# How To Run
+## How To Run
 
-## 1. Clone Repository
-
-```bash
-git clone https://github.com/gaurav-vishwakarma-codes/student-management-system.git
-```
-
-## 2. Open Project Folder
+### 1. Clone the Repository
 
 ```bash
+git clone <repository-link>
 cd SMS
 ```
 
-## 3. Run Main File
+### 2. Run the Application
 
 ```bash
-py main.py
+python main.py
 ```
 
-This will:
-
-* Create database tables automatically
-* Start the Student Management System
+On first run this will automatically create all database tables, then open the GUI.
 
 ---
 
-# Insert Dummy Data
+## First-Time Setup Inside the App
 
-To insert dummy student records:
-
-```bash
-py -m database.dummy_data
-```
+1. Click **Register** to create an admin account.
+2. Log in with your credentials.
+3. On the Dashboard, click **Load Dummy Data** to insert 100 sample student records (only works once — skipped if data already exists).
 
 ---
 
-# Main Functionalities
+## Database Tables
 
-## Authentication
-
-* Admin Registration
-* Admin Login
-
-## Student Operations
-
-* Add Student
-* View Students
-* Search Student
-* Update Student
-* Delete Student
-
-## History Management
-
-* View Updated Student History
-* View Deleted Student History
-* Restore Deleted Student Records
+| Table              | Purpose                                              |
+|--------------------|------------------------------------------------------|
+| `admins`           | Admin credentials (username + SHA-256 password hash) |
+| `students`         | Active student records                               |
+| `updated_students` | Full snapshot before each update + changed field     |
+| `deleted_students` | Soft-deleted records available for restoration       |
 
 ---
 
-# Database Tables
+## Validation Rules
 
-## admins
-
-Stores administrator account information.
-
-## students
-
-Stores active student records.
-
-## updated_students
-
-Stores update history including:
-
-* Updated Field
-* Old Student Data
-* New Value
-* Update Timestamp
-
-## deleted_students
-
-Stores deleted student records for restoration.
+| Field       | Rules                                                        |
+|-------------|--------------------------------------------------------------|
+| Roll Number | Digits only, greater than 0                                  |
+| Full Name   | Letters and spaces only, min 2 words, each word min 3 chars  |
+| Age         | Digits only, between 5 and 50                                |
+| Gender      | Must be Male, Female, or Other                               |
+| Course      | Letters/spaces/dots only, min 2 chars                        |
+| Email       | Must match standard email format                             |
+| Phone       | Exactly 10 digits                                            |
+| Address     | Min 2 chars, cannot be digits only                           |
+| Username    | Letters/digits/underscore, min 3 chars, not digits-only      |
+| Password    | Min 8 chars, must have a letter, digit, and special char     |
 
 ---
 
-# Validation Features
+## Author
 
-* Roll Number Validation
-* Name Validation
-* Age Validation
-* Gender Validation
-* Course Validation
-* Email Validation
-* Phone Number Validation
-* Address Validation
-* Duplicate Email Checking
-* No-Change Update Detection
+**CodeLearner**
+BCA Student | Python, SQLite & Tkinter Developer
 
 ---
 
-# Learning Outcomes
+## License
 
-This project helped in understanding:
-
-* Python Modular Programming
-* SQLite Database Operations
-* CRUD Operations
-* Input Validation
-* Exception Handling
-* Database Design
-* History Tracking Systems
-* Data Restoration Techniques
-* Pagination
-* Git & GitHub Version Control
-
----
-
-# Future Improvements
-
-* GUI Version using Tkinter
-* Web Version using Flask or Django
-* Export Records to Excel/PDF
-* Multiple User Roles
-* Password Hashing using bcrypt
-* Advanced Search Filters
-* Student Attendance System
-* Dashboard & Analytics
-
----
-
-# Screenshots
-
-Screenshots of the application can be added here.
-
----
-
-# Author
-
-"CodeLearner"
-
-BCA Student | Python, SQLite & Java Developer | Cybersecurity Enthusiast
-
----
-
-# License
-
-This project is created for learning and educational purposes.
+Created for learning and educational purposes.

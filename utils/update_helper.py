@@ -1,55 +1,50 @@
-from utils.messages import success_message
+# =====================================================
+# Update Helper
+# Helper functions used during student update operations
+# =====================================================
 
-# ==========================================
-# CHECK IF VALUE IS CHANGED
-# ==========================================
+
+# =====================================================
+# CHECK IF VALUE IS SAME (NO CHANGE)
+# =====================================================
 
 def is_same_value(old_value, new_value):
+    """
+    Compares old and new values to detect if anything actually changed.
+    - For strings: comparison is case-insensitive and strips whitespace
+    - For non-strings (e.g. integers): direct equality check
+    Returns True if values are the same (no change), False otherwise.
+    """
 
-    # HANDLE STRING VALUES
+    # HANDLE STRING VALUES (case-insensitive comparison)
     if isinstance(old_value, str) and isinstance(new_value, str):
 
         if old_value.strip().lower() == new_value.strip().lower():
-
-            success_message(
-                "No Changes Detected"
-            )
-
             return True
 
-    # HANDLE NON-STRING VALUES
+    # HANDLE NON-STRING VALUES (int, float, etc.)
     else:
 
         if old_value == new_value:
-
-            success_message(
-                "No Changes Detected"
-            )
-
             return True
 
     return False
 
 
-# ==========================================
-# REFRESH STUDENT DATA
-# ==========================================
-
-def get_student(cursor, roll_no):
-
-    cursor.execute("""
-        SELECT *
-        FROM students
-        WHERE roll_no=?
-    """, (roll_no,))
-
-    return cursor.fetchone()
-
+# =====================================================
 # STORE UPDATE HISTORY
+# =====================================================
+
 def store_update_history(cursor, old_data, updated_field, new_value):
+    """
+    Inserts a record into the updated_students table
+    before applying the update to the students table.
+    Captures a full snapshot of the student's old data
+    along with which field was changed and the new value.
+    """
 
     cursor.execute("""
-        INSERT INTO updated_students(
+        INSERT INTO updated_students (
 
             roll_no,
             old_full_name,
