@@ -107,7 +107,7 @@ SMS/
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-link>
+git clone https://github.com/gaurav-vishwakarma-codes/student-management-system.git
 cd SMS
 ```
 
