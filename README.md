@@ -10,15 +10,19 @@ Admins can register, log in, and perform full CRUD operations on student records
 ## 📸 Screenshots
  
 **Start Window**
+
 ![Start Window](screenshots/start_window.png)
  
 **Admin Login**
+
 ![Admin Login](screenshots/login.png)
  
 **Dashboard**
+
 ![Dashboard](screenshots/dashboard.png)
  
 **View Students**
+
 ![View Students](screenshots/view_students.png)
 
 ---
