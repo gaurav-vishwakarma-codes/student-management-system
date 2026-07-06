@@ -112,10 +112,15 @@ SMS/
 
 ```bash
 git clone https://github.com/gaurav-vishwakarma-codes/student-management-system.git
+```
+
+### 2. Go inside Repository
+
+```bash
 cd SMS
 ```
 
-### 2. Run the Application
+### 3. Run the Application
 
 ```bash
 python main.py
@@ -164,6 +169,7 @@ On first run this will automatically create all database tables, then open the G
 ## Author
 
 **CodeLearner**
+
 BCA Student | Python, SQLite & Tkinter Developer
 
 ---
