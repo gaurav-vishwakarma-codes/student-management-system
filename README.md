@@ -1,7 +1,7 @@
 # 🎓 Student Management System (GUI)
  
 A desktop Student Management System built with **Python**, **Tkinter**, and **SQLite**.
-This is a **GUI-based upgrade** of my earlier [console-based Student Management System](https://github.com/gaurav-vishwakarma-codes/student-management-system/releases/tag/console-v1) — same core logic, now with a proper interface, better structure, and safer data handling.
+This is a **GUI-based upgrade** of my earlier [console-based Student Management System](https://github.com/gaurav-vishwakarma-codes/student-management-system/tree/console-v1) — same core logic, now with a proper interface, better structure, and safer data handling.
  
 Admins can register, log in, and perform full CRUD operations on student records, with update history, soft-delete, and restore support.
 
