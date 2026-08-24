@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Search Student{% endblock %}
+
+{% block content %}
+<h3 class="text-center mb-3">Search Student</h3>
+
+<form method="GET" action="{{ url_for('student.search_student') }}" class="search-form">
+    <select id="searchByDropdown" name="search_by" class="form-control" style="max-width: 170px;">
+        <option value="roll_no"   {{ 'selected' if search_by == 'roll_no' }}>Roll Number</option>
+        <option value="full_name" {{ 'selected' if search_by == 'full_name' }}>Full Name</option>
+        <option value="age"       {{ 'selected' if search_by == 'age' }}>Age</option>
+        <option value="gender"    {{ 'selected' if search_by == 'gender' }}>Gender</option>
+        <option value="course"    {{ 'selected' if search_by == 'course' }}>Course</option>
+        <option value="email"     {{ 'selected' if search_by == 'email' }}>Email</option>
+        <option value="phone"     {{ 'selected' if search_by == 'phone' }}>Phone</option>
+        <option value="address"   {{ 'selected' if search_by == 'address' }}>Address</option>
+    </select>
+    <input type="text" id="searchQueryInput" name="query" class="form-control" placeholder="Enter value to search" value="{{ query or '' }}">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<!--
+    Wrapped so script.js can hide stale results the instant the
+    field dropdown changes — otherwise switching from "Full Name"
+    to "Age" would clear the text box but leave the old Full-Name
+    results sitting on screen, looking like they still apply.
+-->
+<div id="searchResultsWrap">
+{% if students %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Roll No</th>
+                <th>Full Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Course</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student['roll_no'] }}</td>
+                <td>{{ student['full_name'] }}</td>
+                <td>{{ student['age'] }}</td>
+                <td>{{ student['gender'] }}</td>
+                <td>{{ student['course'] }}</td>
+                <td>{{ student['email'] }}</td>
+                <td>{{ student['phone'] }}</td>
+                <td>{{ student['address'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<p class="text-muted">{{ students|length }} matching student(s) found.</p>
+{% elif searched %}
+<p class="text-center text-muted">No matching student to display.</p>
+{% endif %}
+</div>
+{% endblock %}

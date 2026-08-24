@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Updated Students History{% endblock %}
+
+{% block content %}
+<div class="flex-between">
+    <h3 class="mb-0">Updated Students History</h3>
+    <a href="{{ url_for('history.updated_history') }}" class="btn btn-secondary btn-sm">Refresh</a>
+</div>
+
+<!-- Field-scoped live filter — same pattern as Deleted History -->
+<div class="search-form mb-2" style="justify-content: flex-start;">
+    <select id="updatedFilterField" class="form-control" style="max-width: 170px;">
+        <option value="">All Fields</option>
+        <option value="roll_no">Roll No</option>
+        <option value="old_full_name">Old Name</option>
+        <option value="old_age">Old Age</option>
+        <option value="old_gender">Old Gender</option>
+        <option value="old_course">Old Course</option>
+        <option value="old_email">Old Email</option>
+        <option value="old_phone">Old Phone</option>
+        <option value="old_address">Old Address</option>
+        <option value="updated_field">Updated Field</option>
+        <option value="new_value">New Value</option>
+    </select>
+    <input type="text" id="updatedSearchInput" class="form-control" style="max-width: 300px;"
+           placeholder="Type to filter...">
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Update ID</th>
+                <th>Roll No</th>
+                <th>Old Name</th>
+                <th>Old Age</th>
+                <th>Old Gender</th>
+                <th>Old Course</th>
+                <th>Old Email</th>
+                <th>Old Phone</th>
+                <th>Old Address</th>
+                <th>Updated Field</th>
+                <th>New Value</th>
+                <th>Updated At</th>
+            </tr>
+        </thead>
+        <tbody id="updatedTableBody">
+            {% for row in records %}
+            <tr>
+                <td>{{ row['update_id'] }}</td>
+                <td data-field="roll_no">{{ row['roll_no'] }}</td>
+                <td data-field="old_full_name">{{ row['old_full_name'] }}</td>
+                <td data-field="old_age">{{ row['old_age'] }}</td>
+                <td data-field="old_gender">{{ row['old_gender'] }}</td>
+                <td data-field="old_course">{{ row['old_course'] }}</td>
+                <td data-field="old_email">{{ row['old_email'] }}</td>
+                <td data-field="old_phone">{{ row['old_phone'] }}</td>
+                <td data-field="old_address">{{ row['old_address'] }}</td>
+                <td data-field="updated_field">{{ row['updated_field'] }}</td>
+                <td data-field="new_value">{{ row['new_value'] }}</td>
+                <td>{{ row['updated_at'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="12" class="text-center text-muted">No update history yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p id="updatedNoMatch" class="text-center text-muted d-none">No rows match your filter.</p>
+
+{% endblock %}

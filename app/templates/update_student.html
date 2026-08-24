@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Update Student{% endblock %}
+
+{% block content %}
+<div class="page-center">
+    <div style="width: 100%; max-width: 600px;">
+
+        <h3 class="text-center mb-3">Update Student</h3>
+
+        <form method="GET" action="{{ url_for('student.update_student_search') }}" class="search-form">
+            <input type="text" name="roll_no" class="form-control" placeholder="Enter Roll Number" value="{{ roll_no or '' }}">
+            <button type="submit" class="btn btn-primary">Search Student</button>
+        </form>
+
+        {% if student %}
+
+        <div class="card card-muted">
+            <strong>Current Details</strong>
+            <div>Name: {{ student['full_name'] }}</div>
+            <div>Age: {{ student['age'] }}</div>
+            <div>Gender: {{ student['gender'] }}</div>
+            <div>Course: {{ student['course'] }}</div>
+            <div>Email: {{ student['email'] }}</div>
+            <div>Phone: {{ student['phone'] }}</div>
+            <div>Address: {{ student['address'] }}</div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- FIELD PICKER                                   -->
+        <!-- Choosing a field here reveals only that one    -->
+        <!-- field's update form below (handled in          -->
+        <!-- script.js) instead of showing all 8 at once.   -->
+        <!-- If we just re-rendered this page after a       -->
+        <!-- failed update (active_field is set), the       -->
+        <!-- correct option is pre-selected here too, so    -->
+        <!-- the right section stays open on page load      -->
+        <!-- without waiting for a dropdown change event.   -->
+        <!-- ============================================= -->
+
+        <div class="card">
+            <label class="form-label">What would you like to update?</label>
+            <select id="fieldSelect" class="form-control">
+                <option value=""        {{ 'selected' if not active_field }}>-- Choose a field --</option>
+                <option value="name"    {{ 'selected' if active_field == 'name' }}>Name</option>
+                <option value="age"     {{ 'selected' if active_field == 'age' }}>Age</option>
+                <option value="gender"  {{ 'selected' if active_field == 'gender' }}>Gender</option>
+                <option value="course"  {{ 'selected' if active_field == 'course' }}>Course</option>
+                <option value="email"   {{ 'selected' if active_field == 'email' }}>Email</option>
+                <option value="phone"   {{ 'selected' if active_field == 'phone' }}>Phone</option>
+                <option value="address" {{ 'selected' if active_field == 'address' }}>Address</option>
+                <option value="all"     {{ 'selected' if active_field == 'all' }}>All Fields</option>
+            </select>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- PER-FIELD UPDATE FORMS                         -->
+        <!-- Each one is hidden by default (d-none) unless  -->
+        <!-- it's the active_field from a failed submit —   -->
+        <!-- in that case it renders visible immediately,   -->
+        <!-- with the previously typed value restored.      -->
+        <!-- ============================================= -->
+
+        <div class="card update-field-block {{ '' if active_field == 'name' else 'd-none' }}" id="field-name">
+            <label class="form-label">Name</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='name') }}" class="inline-form">
+                <input type="text" name="new_name" class="form-control" placeholder="New name" value="{{ form_values.new_name if form_values else '' }}" autofocus data-validate="full_name">
+                <button type="submit" class="btn btn-outline">Update Name</button>
+            </form>
+        </div>
+
+        <div class="card update-field-block {{ '' if active_field == 'age' else 'd-none' }}" id="field-age">
+            <label class="form-label">Age</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='age') }}" class="inline-form">
+                <input type="text" name="age" class="form-control" placeholder="New age" value="{{ form_values.age if form_values else '' }}" autofocus data-validate="age">
+                <button type="submit" class="btn btn-outline">Update Age</button>
+            </form>
+        </div>
+
+        <div class="card update-field-block {{ '' if active_field == 'gender' else 'd-none' }}" id="field-gender">
+            <label class="form-label">Gender</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='gender') }}" class="inline-form">
+                <input type="text" name="new_gender" class="form-control" placeholder="Male / Female / Other" value="{{ form_values.new_gender if form_values else '' }}" autofocus data-validate="gender">
+                <button type="submit" class="btn btn-outline">Update Gender</button>
+            </form>
+        </div>
+
+        <div class="card update-field-block {{ '' if active_field == 'course' else 'd-none' }}" id="field-course">
+            <label class="form-label">Course</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='course') }}" class="inline-form">
+                <input type="text" name="new_course" class="form-control" placeholder="New course" value="{{ form_values.new_course if form_values else '' }}" autofocus data-validate="course">
+                <button type="submit" class="btn btn-outline">Update Course</button>
+            </form>
+        </div>
+
+        <div class="card update-field-block {{ '' if active_field == 'email' else 'd-none' }}" id="field-email">
+            <label class="form-label">Email</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='email') }}" class="inline-form">
+                <input type="text" name="new_email" class="form-control" placeholder="New email" value="{{ form_values.new_email if form_values else '' }}" autofocus data-validate="email">
+                <button type="submit" class="btn btn-outline">Update Email</button>
+            </form>
+        </div>
+
+        <div class="card update-field-block {{ '' if active_field == 'phone' else 'd-none' }}" id="field-phone">
+            <label class="form-label">Phone</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='phone') }}" class="inline-form">
+                <input type="text" name="new_phone" class="form-control" placeholder="New phone" value="{{ form_values.new_phone if form_values else '' }}" autofocus data-validate="phone">
+                <button type="submit" class="btn btn-outline">Update Phone</button>
+            </form>
+        </div>
+
+        <div class="card update-field-block {{ '' if active_field == 'address' else 'd-none' }}" id="field-address">
+            <label class="form-label">Address</label>
+            <form method="POST" action="{{ url_for('student.update_student_field', roll_no=student['roll_no'], field='address') }}" class="inline-form">
+                <input type="text" name="new_address" class="form-control" placeholder="New address" value="{{ form_values.new_address if form_values else '' }}" autofocus data-validate="address">
+                <button type="submit" class="btn btn-outline">Update Address</button>
+            </form>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- UPDATE ALL FIELDS AT ONCE                      -->
+        <!-- ============================================= -->
+
+        <div class="card update-field-block {{ '' if active_field == 'all' else 'd-none' }} border-success" id="field-all" style="border-width: 2px;">
+            <strong class="mb-2">Update All Fields</strong>
+            <form method="POST" action="{{ url_for('student.update_student_all', roll_no=student['roll_no']) }}">
+                <div class="field-grid mt-2">
+                    <input type="text" name="new_name" class="form-control" placeholder="Full Name" value="{{ form_values.new_name if form_values else '' }}" data-validate="full_name">
+                    <input type="text" name="age" class="form-control" placeholder="Age" value="{{ form_values.age if form_values else '' }}" data-validate="age">
+                    <input type="text" name="new_gender" class="form-control" placeholder="Gender" value="{{ form_values.new_gender if form_values else '' }}" data-validate="gender">
+                    <input type="text" name="new_course" class="form-control" placeholder="Course" value="{{ form_values.new_course if form_values else '' }}" data-validate="course">
+                    <input type="text" name="new_email" class="form-control" placeholder="Email" value="{{ form_values.new_email if form_values else '' }}" data-validate="email">
+                    <input type="text" name="new_phone" class="form-control" placeholder="Phone" value="{{ form_values.new_phone if form_values else '' }}" data-validate="phone">
+                    <input type="text" name="new_address" class="form-control full-width" placeholder="Address" value="{{ form_values.new_address if form_values else '' }}" data-validate="address">
+                </div>
+                <button type="submit" class="btn btn-success btn-block mt-2">Update All</button>
+            </form>
+        </div>
+
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

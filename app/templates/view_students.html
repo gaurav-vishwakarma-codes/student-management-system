@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}View Students{% endblock %}
+
+{% block content %}
+<div class="flex-between">
+    <h3 class="mb-0">Student Records</h3>
+    <a href="{{ url_for('student.view_students') }}" class="btn btn-secondary btn-sm">Refresh</a>
+</div>
+
+<!-- Field-scoped live filter — same pattern as Deleted/Updated History -->
+<div class="search-form mb-2" style="justify-content: flex-start;">
+    <select id="studentsFilterField" class="form-control" style="max-width: 170px;">
+        <option value="">All Fields</option>
+        <option value="roll_no">Roll No</option>
+        <option value="full_name">Full Name</option>
+        <option value="age">Age</option>
+        <option value="gender">Gender</option>
+        <option value="course">Course</option>
+        <option value="email">Email</option>
+        <option value="phone">Phone</option>
+        <option value="address">Address</option>
+    </select>
+    <input type="text" id="studentsSearchInput" class="form-control" style="max-width: 300px;"
+           placeholder="Type to filter...">
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Roll No</th>
+                <th>Full Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Course</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody id="studentsTableBody">
+            {% for student in students %}
+            <tr>
+                <td data-field="roll_no">{{ student['roll_no'] }}</td>
+                <td data-field="full_name">{{ student['full_name'] }}</td>
+                <td data-field="age">{{ student['age'] }}</td>
+                <td data-field="gender">{{ student['gender'] }}</td>
+                <td data-field="course">{{ student['course'] }}</td>
+                <td data-field="email">{{ student['email'] }}</td>
+                <td data-field="phone">{{ student['phone'] }}</td>
+                <td data-field="address">{{ student['address'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center text-muted">No student records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p id="studentsNoMatch" class="text-center text-muted d-none">No rows match your filter.</p>
+
+{% endblock %}

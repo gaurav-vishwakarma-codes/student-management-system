@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="page-center">
+    <div class="narrow-card">
+        <div class="card">
+            <h3 class="text-center">Admin Login</h3>
+
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" value="{{ username or '' }}" autofocus data-validate="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" data-validate="password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+
+            <p class="text-center text-muted mt-2">
+                New admin? <a href="{{ url_for('auth.register') }}">Register here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,12 +1,29 @@
+# =====================================================
 # Python Cache
+# =====================================================
 __pycache__/
 *.pyc
 
+# =====================================================
+# Virtual Environment
+# Never commit this — it's regenerated on any machine
+# via: python -m venv venv && pip install -r requirements.txt
+# =====================================================
+venv/
+
+# =====================================================
 # SQLite Database
+# Auto-created on first run — should never be committed,
+# since it contains local test/admin data, not source code
+# =====================================================
 student.db
 
+# =====================================================
 # VS Code
+# =====================================================
 .vscode/
 
-# Personal Testing Files
-testing_registration_data
+# =====================================================
+# Personal Testing / Scratch Files
+# =====================================================
+rough.txt

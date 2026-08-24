@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Delete Student{% endblock %}
+
+{% block content %}
+<h3 class="text-center mb-3">Delete Student(s)</h3>
+
+<!--
+    ONE unified search — same dropdown + value pattern as the
+    Search page. Whether this matches a single student (e.g.
+    Roll Number) or many (e.g. Course = "MCom"), results always
+    render as a checkbox table below, so there's only one flow
+    to learn: search, tick who you want, delete.
+-->
+
+<form method="GET" action="{{ url_for('student.delete_student_search') }}" class="search-form">
+    <select id="deleteSearchByDropdown" name="search_by" class="form-control" style="max-width: 170px;">
+        <option value="">-- Choose a field --</option>
+        <option value="roll_no"   {{ 'selected' if search_by == 'roll_no' }}>Roll Number</option>
+        <option value="full_name" {{ 'selected' if search_by == 'full_name' }}>Full Name</option>
+        <option value="age"       {{ 'selected' if search_by == 'age' }}>Age</option>
+        <option value="gender"    {{ 'selected' if search_by == 'gender' }}>Gender</option>
+        <option value="course"    {{ 'selected' if search_by == 'course' }}>Course</option>
+        <option value="email"     {{ 'selected' if search_by == 'email' }}>Email</option>
+        <option value="phone"     {{ 'selected' if search_by == 'phone' }}>Phone</option>
+        <option value="address"   {{ 'selected' if search_by == 'address' }}>Address</option>
+    </select>
+    <input type="text" id="deleteSearchQueryInput" name="query" class="form-control" placeholder="Value to search" value="{{ query or '' }}">
+    <button type="submit" class="btn btn-primary">Search Student</button>
+</form>
+
+<!--
+    Wrapped so script.js can hide stale results (and their
+    checkboxes) the instant the field dropdown changes.
+-->
+<div id="deleteResultsWrap">
+{% if students %}
+
+<form method="POST" action="{{ url_for('student.delete_students_bulk') }}">
+
+    <!-- CARRY THE SEARCH CRITERIA ALONG SO THE RESULTS TABLE
+         REAPPEARS AFTER SUBMIT INSTEAD OF RESETTING BLANK -->
+    <input type="hidden" name="search_by" value="{{ search_by }}">
+    <input type="hidden" name="query" value="{{ query }}">
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" title="Select all"></th>
+                    <th>Roll No</th>
+                    <th>Full Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Course</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td><input type="checkbox" name="roll_no" value="{{ s['roll_no'] }}" class="row-checkbox"></td>
+                    <td>{{ s['roll_no'] }}</td>
+                    <td>{{ s['full_name'] }}</td>
+                    <td>{{ s['age'] }}</td>
+                    <td>{{ s['gender'] }}</td>
+                    <td>{{ s['course'] }}</td>
+                    <td>{{ s['email'] }}</td>
+                    <td>{{ s['phone'] }}</td>
+                    <td>{{ s['address'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="text-muted">{{ students|length }} matching student(s) found.</p>
+
+    <button type="submit" class="btn btn-danger"
+            data-label-zero="Delete Selected"
+            data-label-one="Delete Selected Student"
+            data-label-many="Delete {n} Selected Students"
+            data-confirm="Move the selected student(s) to Deleted History?">
+        Delete Selected
+    </button>
+
+</form>
+
+{% elif searched %}
+<p class="text-center text-muted">No matching students to display.</p>
+{% endif %}
+</div>
+
+<hr class="mt-3">
+
+<form method="POST" action="{{ url_for('student.delete_all_students') }}"
+      onsubmit="return confirm('Are you sure you want to delete ALL students?\n\nThis will move all records to Deleted History.');">
+    <button type="submit" class="btn btn-danger-dark btn-block" style="max-width: 480px;" {{ 'disabled' if total_students == 0 else '' }}>
+        Delete All Students
+    </button>
+</form>
+
+{% endblock %}

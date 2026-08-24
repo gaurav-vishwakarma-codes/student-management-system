@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Deleted Students History{% endblock %}
+
+{% block content %}
+<div class="flex-between">
+    <h3 class="mb-0">Deleted Students History</h3>
+    <a href="{{ url_for('history.deleted_history') }}" class="btn btn-secondary btn-sm">Refresh</a>
+</div>
+
+<!--
+    The Tkinter version supported Ctrl+A / Ctrl+Click multi-select
+    restore in a Treeview. Here that becomes checkboxes + a
+    "select all" checkbox in the header (handled by script.js),
+    submitted together as one form.
+-->
+
+<form method="POST" action="{{ url_for('history.restore_students') }}">
+
+    <!--
+        Field-scoped live filter — pick WHICH column to filter by
+        (e.g. "Full Name"), then type a value. It's client-side JS
+        (script.js) for instant filtering as you type, but both
+        inputs also live INSIDE this <form> so that submitting
+        Restore/Permanently Delete carries the current filter along
+        to the server. The server hands it right back on redirect
+        (see deleted_history route), and script.js re-applies the
+        filter automatically on page load — so it survives a page
+        reload instead of resetting to blank.
+    -->
+
+    <div class="search-form mb-2" style="justify-content: flex-start;">
+        <select id="deletedFilterField" name="filter_field" class="form-control" style="max-width: 170px;">
+            <option value=""           {{ 'selected' if not filter_field }}>All Fields</option>
+            <option value="roll_no"    {{ 'selected' if filter_field == 'roll_no' }}>Roll No</option>
+            <option value="full_name"  {{ 'selected' if filter_field == 'full_name' }}>Full Name</option>
+            <option value="age"        {{ 'selected' if filter_field == 'age' }}>Age</option>
+            <option value="gender"     {{ 'selected' if filter_field == 'gender' }}>Gender</option>
+            <option value="course"     {{ 'selected' if filter_field == 'course' }}>Course</option>
+            <option value="email"      {{ 'selected' if filter_field == 'email' }}>Email</option>
+            <option value="phone"      {{ 'selected' if filter_field == 'phone' }}>Phone</option>
+            <option value="address"    {{ 'selected' if filter_field == 'address' }}>Address</option>
+        </select>
+        <input type="text" id="deletedSearchInput" name="filter_query" class="form-control" style="max-width: 300px;"
+               placeholder="Type to filter..." value="{{ filter_query or '' }}">
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" title="Select all"></th>
+                    <th>Delete ID</th>
+                    <th>Roll No</th>
+                    <th>Full Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Course</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Deleted At</th>
+                </tr>
+            </thead>
+            <tbody id="deletedTableBody">
+                {% for row in records %}
+                <tr>
+                    <td><input type="checkbox" name="roll_no" value="{{ row['roll_no'] }}" class="row-checkbox"></td>
+                    <td>{{ row['delete_id'] }}</td>
+                    <td data-field="roll_no">{{ row['roll_no'] }}</td>
+                    <td data-field="full_name">{{ row['full_name'] }}</td>
+                    <td data-field="age">{{ row['age'] }}</td>
+                    <td data-field="gender">{{ row['gender'] }}</td>
+                    <td data-field="course">{{ row['course'] }}</td>
+                    <td data-field="email">{{ row['email'] }}</td>
+                    <td data-field="phone">{{ row['phone'] }}</td>
+                    <td data-field="address">{{ row['address'] }}</td>
+                    <td>{{ row['deleted_at'] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="11" class="text-center text-muted">No deleted students.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p id="deletedNoMatch" class="text-center text-muted d-none">No rows match your filter.</p>
+
+    {% if records %}
+    <div class="inline-form" style="max-width: 420px;">
+        <button type="submit" class="btn btn-success" style="flex:1;"
+                data-label-zero="Restore Selected"
+                data-label-one="Restore Selected Student"
+                data-label-many="Restore {n} Selected Students">
+            Restore Selected
+        </button>
+
+        <!--
+            Same checkboxes, same <form> — formaction sends THIS
+            button's click to a different route than the form's
+            default action, without needing a second form or
+            duplicating the checkboxes.
+        -->
+        <button type="submit"
+                formaction="{{ url_for('history.permanently_delete_students') }}"
+                class="btn btn-danger" style="flex:1;"
+                data-label-zero="Permanently Delete Selected"
+                data-label-one="Permanently Delete Selected Student"
+                data-label-many="Permanently Delete {n} Selected Students"
+                data-confirm="Permanently delete the selected student(s)?&#10;&#10;This CANNOT be undone — there is no further history to recover them from.">
+            Permanently Delete Selected
+        </button>
+    </div>
+    {% endif %}
+
+</form>
+{% endblock %}

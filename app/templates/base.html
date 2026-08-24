@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management System{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% if session.get('admin_id') %}
+<nav class="navbar">
+    <div class="nav-inner">
+        <a class="nav-brand" href="{{ url_for('student.dashboard') }}">🎓 SMS</a>
+
+        <button class="nav-toggle" id="navToggle" type="button">☰ Menu</button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="{{ url_for('student.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('student.add_student') }}">Add</a></li>
+            <li><a href="{{ url_for('student.view_students') }}">View</a></li>
+            <li><a href="{{ url_for('student.search_student') }}">Search</a></li>
+            <li><a href="{{ url_for('student.update_student_search') }}">Update</a></li>
+            <li><a href="{{ url_for('student.delete_student_search') }}">Delete</a></li>
+            <li><a href="{{ url_for('history.updated_history') }}">Update History</a></li>
+            <li><a href="{{ url_for('history.deleted_history') }}">Deleted History</a></li>
+        </ul>
+
+        <div class="nav-right">
+            <span class="nav-user">👤 {{ session.get('username') }}</span>
+            <a class="btn btn-outline btn-sm" href="{{ url_for('auth.logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'error' if category == 'error' else ('success' if category == 'success' else 'info') }}">
+                    <span>{{ message }}</span>
+                    <button type="button" class="alert-close">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
