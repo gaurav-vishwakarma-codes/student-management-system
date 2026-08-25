@@ -1,12 +1,11 @@
 # 🎓 Student Management System (Flask Web App)
 
-This Student Management System has gone through three stages as I've learned — all living in the **same GitHub repository**, with each stage marked by a git tag rather than split into separate repos:
+This Student Management System has gone through two stages as I've learned — all living in the **same GitHub repository**, with each stage marked by a git tag rather than split into separate repos:
 
 | Stage | Interface | Tag |
 |---|---|---|
 | 1 | **Console-based** (plain terminal I/O) | [`console-v1`](https://github.com/gaurav-vishwakarma-codes/student-management-system/tree/console-v1) |
 | 2 | **Tkinter GUI** (desktop windows) | [`gui-v2`](https://github.com/gaurav-vishwakarma-codes/student-management-system/tree/gui-v2) |
-| 3 | **Flask Web App** (this version) | [`flask-v3`](https://github.com/gaurav-vishwakarma-codes/student-management-system/tree/flask-v3) |
 
 Each stage rebuilds the same core idea with a different interface and architecture. This version's step: same core logic and database design as the Tkinter (`gui-v2`) stage, rebuilt as a proper browser-based web application — Tkinter windows became Flask routes + Jinja2 templates, and the desktop event loop became a real HTTP request/response cycle.
 
