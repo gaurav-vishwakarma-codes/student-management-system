@@ -212,12 +212,6 @@ This project helped in understanding:
 
 ---
 
-# Screenshots
-
-Screenshots of the application can be added here.
-
----
-
 # Author
 
 CodeLearner
